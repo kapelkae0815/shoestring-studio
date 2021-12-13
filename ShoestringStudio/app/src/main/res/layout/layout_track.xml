@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trackHolder"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="#ECCED8">
+
+    <TextView
+        android:id="@+id/textTrackName"
+        style="@android:style/Widget.DeviceDefault.TextView"
+        android:layout_width="128dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_track_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textVolumeText"
+        android:layout_width="129dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_volume"
+        app:layout_constraintStart_toEndOf="@+id/textTrackName"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switchMute"
+        android:layout_width="104dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_mute"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTrackName" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/sliderVolume"
+        android:layout_width="263dp"
+        android:layout_height="43dp"
+        android:stepSize="10.0"
+        android:tooltipText="@string/text_volume"
+        android:valueFrom="0.0"
+        android:valueTo="100.0"
+        app:layout_constraintStart_toStartOf="@+id/textVolumeText"
+        app:layout_constraintTop_toBottomOf="@+id/inputTextVolume" />
+
+    <EditText
+        android:id="@+id/inputTextVolume"
+        android:layout_width="135dp"
+        android:layout_height="39dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/textVolumeText"
+        app:layout_constraintTop_toTopOf="@+id/textVolumeText" />
+
+    <ImageButton
+        android:id="@+id/buttonDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/btn_dialog" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

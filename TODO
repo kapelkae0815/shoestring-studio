@@ -1,0 +1,10 @@
+TODO:
+Things to handle, sort of in order.
+
+- nail down desired features (see description document)
+- figure out which versions of Android to support (some things easier with newer versions - see https://developer.android.com/guide/topics/media/volumeshaper req. API 26)
+- figure out what exactly we are using the database for
+    (local seems easier - store projects/tracks/effects in single database, export to single audio file on demand?)
+- figure out how to play & record audio at the same time
+- figure out audio codecs to support for import/export (see https://developer.android.com/guide/topics/media/media-formats - are these already supported to get audio out of/convert between?)
+- lay out UI

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mynavigation"
+    app:startDestination="@id/mainMenuFragment">
+
+    <fragment
+        android:id="@+id/mainMenuFragment"
+        android:name="com.example.shoestringstudio.MainMenuFragment"
+        android:label="MainMenuFragment"
+        tools:layout="@layout/fragment_main_menu" >
+        <action
+            android:id="@+id/action_mainMenuFragment_to_trackEditorFragment"
+            app:destination="@id/trackEditorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackEditorFragment"
+        android:name="com.example.shoestringstudio.TrackEditorFragment"
+        android:label="TrackEditorFragment"
+        tools:layout="@layout/fragment_track_editor">
+        <action
+            android:id="@+id/action_trackEditorFragment_to_recordingFragment"
+            app:destination="@id/recordingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/recordingFragment"
+        android:name="com.example.shoestringstudio.RecordingFragment"
+        android:label="RecordingFragment"
+        tools:layout="@layout/fragment_recording" />
+</navigation>

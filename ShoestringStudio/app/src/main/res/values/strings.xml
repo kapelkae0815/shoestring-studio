@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">ShoestringStudio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_play">Play</string>
+    <string name="text_pause">Pause</string>
+    <string name="text_add_track">Add Track</string>
+    <string name="text_projects">Projects</string>
+    <string name="text_share">Share</string>
+    <string name="text_export">Export</string>
+    <string name="text_about">About</string>
+    <string name="text_tracks">Tracks</string>
+    <string name="text_add_project">New Project</string>
+    <string name="text_recording">Recording</string>
+    <string name="text_mute">Mute</string>
+    <string name="text_track_name">Track Name</string>
+    <string name="text_panning">Panning</string>
+    <string name="text_volume">Volume</string>
+    <string name="text_number_of_tracks"># of Tracks</string>
+    <string name="text_project_name">Project Name</string>
+    <string name="choose_from_stoarage">Choose from storage</string>
+    <string name="recordNewTrack">Record new track</string>
+    <string name="recyclerview_project_name_text">Project</string>
+    <string name="text_project_delete_button">Delete</string>
+    <string name="text_project_edit_button">Edit</string>
+    <string name="exportToDevice">Export To Device</string>
+    <string name="shareProject">Share Project</string>
+    <string name="text_play_pause">Play/Pause</string>
+</resources>
