@@ -1,26 +1,38 @@
 package com.example.shoestringstudio.database.daos
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.shoestringstudio.database.entities.Project
+import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 
 @Dao
 interface ProjectDao {
-    @Insert
-    fun insertProject(project: Project)
-
     @Delete
     fun deleteProject(project: Project)
 
-    @Query("SELECT * FROM Project WHERE userId = :id")
-    fun getProjectsFromUser(id: Long): LiveData<List<Project>>
+    @Update
+    fun updateProject(project: Project)
+
+    @Insert
+    fun insertProject(project: Project)
+
+    @Query("UPDATE Project SET trackAmount = trackAmount-1 WHERE projectId = :id")
+    fun updateTrackAmount(id: Long?)
 
     @Query("SELECT * FROM Project WHERE projectId = :id")
-    fun getIdFromProject(id: Long): Project
+    fun getProjectFromId(id: Long): Project
 
+    @Query("SELECT * FROM Project WHERE projectId = :id")
+    fun getTracksFromProject(id: Long): LiveData<List<ProjectWithTracks>>
+    @Transaction
+    @Query("SELECT * FROM Track WHERE projectId = :id")
+    fun getTracksFromProject(id: Long?): LiveData<List<ProjectWithTracks>>
+
+    @Query("SELECT max(projectId) FROM Project")
+    fun getLatestProjectId(): Long
+
+    @Query("SELECT COUNT(*) FROM TRACK WHERE projectId = :id")
+    fun getTrackAmount(id: Long?): Int
 
 
 }

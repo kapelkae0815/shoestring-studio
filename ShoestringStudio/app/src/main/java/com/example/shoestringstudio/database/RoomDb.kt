@@ -13,6 +13,7 @@ import com.example.shoestringstudio.database.entities.User
 
 @Database(entities = [Project::class, SoundSource::class,
     Track::class, User::class], version = 1)
+@TypeConverters(Converter::class)
 abstract class RoomDb: RoomDatabase() {
     abstract fun projectDao(): ProjectDao
     abstract fun soundSourceDao(): SoundSourceDao
@@ -23,6 +24,10 @@ abstract class RoomDb: RoomDatabase() {
     companion object {
         private var instance: RoomDb? = null
         fun getInstance(context: Context): RoomDb {
+            // uncomment below to reset the database
+            // note: this is wipe out all of the data inside of the database
+            // if you don't want that to happen, then just change the version number
+            //context.deleteDatabase("ShoeStringStudioDatabase")
             if(instance == null) {
                 instance = Room.databaseBuilder(
                     context,

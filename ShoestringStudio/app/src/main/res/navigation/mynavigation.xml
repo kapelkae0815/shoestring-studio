@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_trackEditorFragment_to_recordingFragment"
             app:destination="@id/recordingFragment" />
+        <argument
+            android:name="projectId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/recordingFragment"

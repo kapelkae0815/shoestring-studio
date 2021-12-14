@@ -21,29 +21,37 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.media.MediaPlayer
 import androidx.core.net.toUri
+import androidx.navigation.fragment.navArgs
+import com.example.shoestringstudio.database.Repository
+import com.example.shoestringstudio.database.entities.Track
 
 
 class TrackEditorFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackEditorBinding
+    private val args: TrackEditorFragmentArgs by navArgs()
     //make an ArrayList of files that will be the project
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
     var recyclerLayout = LinearLayoutManager(context)
     var recyclerAdapter = TrackEditorAdapter(tracks)
+    private lateinit var repository: Repository
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        repository = Repository.getInstance(activity?.application!!)
         // Inflate the layout for this fragment
-        val binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
+        binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
             inflater, R.layout.fragment_track_editor, container, false
         )
         //button that opens the popup menu
         binding.buttonAddTrack.setOnClickListener { v: View ->
             showPopup(binding.buttonAddTrack)
+            repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
         }
 
         binding.buttonPlayPause.setOnClickListener { v: View ->
@@ -60,9 +68,10 @@ class TrackEditorFragment : Fragment() {
         binding.trackDisplay.apply{
             setHasFixedSize(true)
             // layout manager
-            layoutManager = recyclerLayout
+            binding.trackDisplay.layoutManager = LinearLayoutManager(context)
             // adapter
-            adapter = recyclerAdapter
+            binding.trackDisplay.adapter = recyclerAdapter
+
         }
 
         setHasOptionsMenu(true)
@@ -121,6 +130,7 @@ class TrackEditorFragment : Fragment() {
                     trackPlayer = MediaPlayer.create(context,audioUri)
                     tracksPlayer.add(trackPlayer)
                     //setUpMediaPlayer()
+                    //repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
                     recyclerAdapter.notifyDataSetChanged()
                 }
             }
