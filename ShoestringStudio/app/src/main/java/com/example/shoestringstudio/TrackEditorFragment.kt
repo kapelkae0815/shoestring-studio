@@ -135,23 +135,36 @@ class TrackEditorFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
-
+                exportProject()
+            }
+            R.id.shareProject -> {
+                shareProject(getShareProjectIntent())
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    fun compileForExport(tracks: List<File>) {
+    private fun exportProject() {
+        compileForExport(tracks)
+    }
+
+    private fun compileForExport(tracks: List<File>) {
 
     }
 
-    private fun sendProject(){
+    private fun getShareProjectIntent() : Intent{
         val sendIntent: Intent = Intent().apply {
             type = "audio/*"
             action = Intent.ACTION_SEND
         }
-        //sendIntent.putExtra(Intent.EXTRA_STREAM, audioFile);
-        startActivity(Intent.createChooser(sendIntent, "Share Image"))
+
+        return sendIntent
+    }
+
+    private fun shareProject(intent: Intent) {
+        if (intent != null) {
+            startActivity(Intent.createChooser(intent, "Share Audio"))
+        }
     }
 
     private fun setUpMediaPlayer(){
