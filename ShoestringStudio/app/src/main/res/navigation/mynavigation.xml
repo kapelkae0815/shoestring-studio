@@ -22,3 +22,13 @@
         <action
             android:id="@+id/action_trackEditorFragment_to_recordingFragment"
             app:destination="@id/recordingFragment" />
+        <argument
+            android:name="projectId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/recordingFragment"
+        android:name="com.example.shoestringstudio.RecordingFragment"
+        android:label="RecordingFragment"
+        tools:layout="@layout/fragment_recording" />
+</navigation>

@@ -1,5 +1,6 @@
 package com.example.shoestringstudio
 
+import android.R.attr
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.media.MediaMuxer
@@ -24,13 +25,15 @@ import androidx.navigation.fragment.navArgs
 import com.example.shoestringstudio.database.Repository
 import com.example.shoestringstudio.database.entities.Track
 import java.io.*
-
+import android.R.attr.data
+import android.content.Context.MODE_WORLD_READABLE
 
 
 class TrackEditorFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackEditorBinding
     private val args: TrackEditorFragmentArgs by navArgs()
+
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
@@ -102,7 +105,7 @@ class TrackEditorFragment : Fragment() {
 
     //goes to RecordingFragment
     fun toRecordTrack(v: View?){
-        v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
+        //v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
     }
 
 
@@ -149,7 +152,7 @@ class TrackEditorFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
-                compileAndSave()
+                compileForExport(tracks)
             }
             R.id.shareProject -> {
 
@@ -159,27 +162,21 @@ class TrackEditorFragment : Fragment() {
     }
 
     fun compileForExport(tracks: List<File>) {
-        var mergeAudio = MergeAudio()
-        mergeAudio.loadFFmpegLibrary()
-        mergeAudio.merge(tracks)
+        val mergeAudio : MergeAudio? = null
+        mergeAudio?.mix(tracks)
     }
 
     private fun compileAndSave(){
-        compileForExport(tracks)
-        val saveIntent: Intent = Intent().apply {
-            type = "audio/*"
-            action = Intent.ACTION_CREATE_DOCUMENT
-        }
-        startActivity(Intent.createChooser(saveIntent, "Save"))
+
     }
 
-    private fun getShareProjectIntent() : Intent{
-        val sendIntent: Intent = Intent().apply {
-            type = "audio/*"
-            action = Intent.ACTION_SEND
-        }
-        startActivity(Intent.createChooser(sendIntent, "Share Image"))
-    }
+    //private fun getShareProjectIntent() : Intent{
+      //  val sendIntent: Intent = Intent().apply {
+       //     type = "audio/*"
+        //    action = Intent.ACTION_SEND
+        //}
+        //startActivity(Intent.createChooser(sendIntent, "Share Image"))
+    //}
 
     private fun setUpMediaPlayer(){
         //add each Uri into a mediaPlayer and then add the media players to an arrayList
