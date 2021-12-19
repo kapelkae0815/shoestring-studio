@@ -1,40 +1,22 @@
 package com.example.shoestringstudio
 
-import android.R.attr
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.media.MediaMuxer
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.databinding.DataBindingUtil
-import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
-
-import androidx.activity.result.contract.ActivityResultContracts
-import java.util.*
-
-import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.media.MediaPlayer
-import android.os.AsyncTask.execute
-import android.os.Environment
-import androidx.core.net.toUri
-import androidx.navigation.fragment.navArgs
 import com.example.shoestringstudio.database.Repository
-import com.example.shoestringstudio.database.entities.Track
-import java.io.*
-import android.R.attr.data
-import android.content.Context.MODE_WORLD_READABLE
 import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
@@ -51,12 +33,11 @@ class TrackEditorFragment : Fragment() {
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
     var recyclerLayout = LinearLayoutManager(context)
-    var recyclerAdapter = TrackEditorAdapter(tracks)
+    var recyclerAdapter = TrackEditorAdapter()
+    private lateinit var viewModel: ViewModel
 
     var fileOut = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "test/mp4")
     private lateinit var repository: Repository
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -101,18 +82,12 @@ class TrackEditorFragment : Fragment() {
         popup.setOnMenuItemClickListener { item: MenuItem ->
             if (item.itemId == R.id.choose_from_storage) {
                 prepOpenAudioFiles()
-            } else if (item.itemId == R.id.record_new_track) {
-                toRecordTrack(v)
             }
             true
         }
         popup.show()
     }
 
-    //goes to RecordingFragment
-    fun toRecordTrack(v: View?){
-        //v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
-    }
 
 
     /**
