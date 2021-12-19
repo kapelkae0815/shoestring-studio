@@ -1,36 +1,26 @@
 package com.example.shoestringstudio
 
-import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
-import androidx.databinding.DataBindingUtil
-import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
-import androidx.activity.result.ActivityResultCaller
-import androidx.activity.result.contract.ActivityResultContracts
-import java.io.File
-import java.util.*
-
-import android.widget.PopupMenu
-import androidx.core.view.get
-import androidx.navigation.findNavController
-import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import android.media.MediaPlayer
-import android.provider.MediaStore
 import android.util.Log
-import androidx.core.net.toUri
+import android.view.*
+import android.widget.PopupMenu
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shoestringstudio.database.Repository
 import com.example.shoestringstudio.database.ViewModel
-import com.example.shoestringstudio.database.entities.Track
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
-import com.example.shoestringstudio.database.relationships.UserWithProjects
+import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
+import java.io.File
+import java.util.*
 
 
 class TrackEditorFragment : Fragment() {
@@ -78,9 +68,11 @@ class TrackEditorFragment : Fragment() {
         return binding.root
     }
 
-    //Shows a popup to choose between recording or
-    // selecting a sound source from the file system
-    fun showPopup(v: View?) {
+    /**
+     * Shows a popup to choose between recording or
+     * selecting a sound source from the file system
+     */
+    private fun showPopup(v: View?) {
         val popup: PopupMenu = PopupMenu(activity, v)
         val inflater: MenuInflater = popup.getMenuInflater()
         inflater.inflate(R.menu.add_track_menu, popup.getMenu())
@@ -127,8 +119,6 @@ class TrackEditorFragment : Fragment() {
                     //store the audio file in a variable
                     val audioUri = result.data!!.data as Uri
                     val track = File(audioUri.path)
-                    //tracks.add(track)
-                    //setUpMediaPlayer()
                     repository.insertTrack(args.projectId!!, audioUri.toString(), track.nameWithoutExtension)
 
                     recyclerAdapter.notifyDataSetChanged()
@@ -153,18 +143,6 @@ class TrackEditorFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun compileForExport(tracks: List<File>) {
-
-    }
-
-    private fun sendProject(){
-        val sendIntent: Intent = Intent().apply {
-            type = "audio/*"
-            action = Intent.ACTION_SEND
-        }
-        //sendIntent.putExtra(Intent.EXTRA_STREAM, audioFile);
-        startActivity(Intent.createChooser(sendIntent, "Share Image"))
-    }
 
     /**
      * Holds observer for getting the recyclerView
@@ -184,27 +162,21 @@ class TrackEditorFragment : Fragment() {
             Observer<ProjectWithTracks> {
             private var adapter = recyclerAdapter
             override fun onChanged(t: ProjectWithTracks?) {
+                tracksPlayer.clear()
                 if(t != null) {
                     adapter.setTracks(t)
-                    for(i in t.tracks) {
-                        if(i.pathName?.toUri() != null) {
-                            Log.i("TEST: ", Uri.parse(i.pathName).toString())
-                            tracks.add(File(Uri.parse(i.pathName).path))
-                            trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
-                            tracksPlayer.add(trackPlayer)
+                    if(t.tracks.count() == 0){
+                        recyclerAdapter.notifyDataSetChanged()
+                    }
 
-                        }
+                    for(i in t.tracks) {
+                        tracks.add(File(Uri.parse(i.pathName).path))
+                        trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
+                        tracksPlayer.add(trackPlayer)
+
                     }
                 }
             }
         })
-    }
-
-    private fun setUpMediaPlayer(){
-        //add each Uri into a mediaPlayer and then add the media players to an arrayList
-        for(i in tracks.indices){
-            trackPlayer = MediaPlayer.create(context,tracks[i].toUri())
-            tracksPlayer.add(trackPlayer)
-      }
     }
 }

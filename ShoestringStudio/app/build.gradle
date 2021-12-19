@@ -68,12 +68,13 @@ dependencies {
 
     //Database
     implementation 'androidx.room:room-runtime:2.3.0'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha03'
     kapt 'androidx.room:room-compiler:2.3.0'
 
     // Testing
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha03'
     //Intents
     implementation 'androidx.activity:activity-ktx:1.4.0'
     implementation 'androidx.fragment:fragment-ktx:1.4.0'
