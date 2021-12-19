@@ -44,7 +44,7 @@ class MainMenuAdapter:
             textView.text = current.name
             buttonDeleteView.setOnClickListener{
                 Log.i("test:", "button clicked projectId = " + current.projectId.toString())
-                deleteProject(current.projectId)
+                deleteProject(current.projectId!!)
             }
             buttonEditView.setOnClickListener { v: View ->
                 v.findNavController().navigate(MainMenuFragmentDirections.actionMainMenuFragmentToTrackEditorFragment(current.projectId!!))
@@ -55,7 +55,7 @@ class MainMenuAdapter:
     override fun getItemCount(): Int {
         return projects?.size?:0
     }
-    private fun deleteProject(id: Long?) {
+    private fun deleteProject(id: Long) {
         if (id != null && repository != null) {
             repository.deleteProject(id)
         }

@@ -20,10 +20,17 @@ import androidx.navigation.findNavController
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.media.MediaPlayer
+import android.provider.MediaStore
+import android.util.Log
 import androidx.core.net.toUri
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.shoestringstudio.database.Repository
+import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.entities.Track
+import com.example.shoestringstudio.database.relationships.ProjectWithTracks
+import com.example.shoestringstudio.database.relationships.UserWithProjects
 
 
 class TrackEditorFragment : Fragment() {
@@ -33,9 +40,9 @@ class TrackEditorFragment : Fragment() {
     //make an ArrayList of files that will be the project
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
-    var trackPlayer = MediaPlayer()
-    var recyclerLayout = LinearLayoutManager(context)
-    var recyclerAdapter = TrackEditorAdapter(tracks)
+    lateinit var trackPlayer: MediaPlayer
+    lateinit var recyclerAdapter: TrackEditorAdapter
+    private lateinit var viewModel: ViewModel
     private lateinit var repository: Repository
 
 
@@ -43,6 +50,7 @@ class TrackEditorFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         repository = Repository.getInstance(activity?.application!!)
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
@@ -51,7 +59,6 @@ class TrackEditorFragment : Fragment() {
         //button that opens the popup menu
         binding.buttonAddTrack.setOnClickListener { v: View ->
             showPopup(binding.buttonAddTrack)
-            repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
         }
 
         binding.buttonPlayPause.setOnClickListener { v: View ->
@@ -65,17 +72,9 @@ class TrackEditorFragment : Fragment() {
             }
         }
 
-        binding.trackDisplay.apply{
-            setHasFixedSize(true)
-            // layout manager
-            binding.trackDisplay.layoutManager = LinearLayoutManager(context)
-            // adapter
-            binding.trackDisplay.adapter = recyclerAdapter
-
-        }
-
         setHasOptionsMenu(true)
-
+        Log.i("id: " , args.projectId.toString())
+        getTracks()
         return binding.root
     }
 
@@ -98,6 +97,7 @@ class TrackEditorFragment : Fragment() {
 
     //goes to RecordingFragment
     fun toRecordTrack(v: View?){
+        for(i in tracksPlayer) i.release()
         v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
     }
 
@@ -121,20 +121,22 @@ class TrackEditorFragment : Fragment() {
      */
     private var audioFileLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
             if (result.data != null) {
                 if (result.data!!.data != null) {
                     //store the audio file in a variable
                     val audioUri = result.data!!.data as Uri
                     val track = File(audioUri.path)
-                    tracks.add(track)
-                    trackPlayer = MediaPlayer.create(context,audioUri)
-                    tracksPlayer.add(trackPlayer)
+                    //tracks.add(track)
                     //setUpMediaPlayer()
-                    //repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
+                    repository.insertTrack(args.projectId!!, audioUri.toString(), track.nameWithoutExtension)
+
                     recyclerAdapter.notifyDataSetChanged()
                 }
             }
         }
+
+
 
     //Inflate the Options menu
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -162,6 +164,40 @@ class TrackEditorFragment : Fragment() {
         }
         //sendIntent.putExtra(Intent.EXTRA_STREAM, audioFile);
         startActivity(Intent.createChooser(sendIntent, "Share Image"))
+    }
+
+    /**
+     * Holds observer for getting the recyclerView
+     * Displays all tracks through the database
+     * Does break when restarting app
+     */
+    private fun getTracks() {
+        recyclerAdapter = TrackEditorAdapter()
+        binding.trackDisplay.apply {
+            setHasFixedSize(true)
+            binding.trackDisplay.layoutManager = LinearLayoutManager(context)
+            binding.trackDisplay.adapter = recyclerAdapter
+        }
+        val viewModelProvider = ViewModelProvider(this)
+        viewModel = viewModelProvider.get(ViewModel::class.java)
+        viewModel.getAllTracks(args.projectId).observe(viewLifecycleOwner, object:
+            Observer<ProjectWithTracks> {
+            private var adapter = recyclerAdapter
+            override fun onChanged(t: ProjectWithTracks?) {
+                if(t != null) {
+                    adapter.setTracks(t)
+                    for(i in t.tracks) {
+                        if(i.pathName?.toUri() != null) {
+                            Log.i("TEST: ", Uri.parse(i.pathName).toString())
+                            tracks.add(File(Uri.parse(i.pathName).path))
+                            trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
+                            tracksPlayer.add(trackPlayer)
+
+                        }
+                    }
+                }
+            }
+        })
     }
 
     private fun setUpMediaPlayer(){
