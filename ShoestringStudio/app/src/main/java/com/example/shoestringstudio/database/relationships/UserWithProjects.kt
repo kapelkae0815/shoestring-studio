@@ -9,8 +9,8 @@ import com.example.shoestringstudio.database.entities.User
 data class UserWithProjects(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "id",
+        parentColumn = "userId",
         entityColumn = "userId"
     )
-    val projects: LiveData<List<Project>>
+    val projects: List<Project>
     )

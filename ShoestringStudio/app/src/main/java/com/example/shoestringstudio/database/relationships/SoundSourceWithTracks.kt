@@ -12,5 +12,5 @@ data class SoundSourceWithTracks(
         parentColumn = "soundId",
         entityColumn = "soundId"
     )
-    val tracks: LiveData<List<Track>>
+    val tracks: List<Track>
 )

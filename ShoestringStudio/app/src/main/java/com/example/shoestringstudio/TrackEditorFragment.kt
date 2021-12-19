@@ -1,49 +1,61 @@
 package com.example.shoestringstudio
 
-import android.content.Context
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.media.MediaMuxer
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.databinding.DataBindingUtil
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
-import androidx.activity.result.ActivityResultCaller
+
 import androidx.activity.result.contract.ActivityResultContracts
-import java.io.File
 import java.util.*
 
 import android.widget.PopupMenu
-import androidx.core.view.get
 import androidx.navigation.findNavController
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import android.media.MediaPlayer
+import android.os.AsyncTask.execute
+import android.os.Environment
 import androidx.core.net.toUri
+import androidx.navigation.fragment.navArgs
+import com.example.shoestringstudio.database.Repository
+import com.example.shoestringstudio.database.entities.Track
+import java.io.*
+
 
 
 class TrackEditorFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackEditorBinding
-    //make an ArrayList of files that will be the project
+    private val args: TrackEditorFragmentArgs by navArgs()
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
     var recyclerLayout = LinearLayoutManager(context)
     var recyclerAdapter = TrackEditorAdapter(tracks)
 
+    var fileOut = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "test/mp4")
+    private lateinit var repository: Repository
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        //fileOut.createNewFile()
+        repository = Repository.getInstance(activity?.application!!)
         // Inflate the layout for this fragment
-        val binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
+        binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
             inflater, R.layout.fragment_track_editor, container, false
         )
         //button that opens the popup menu
         binding.buttonAddTrack.setOnClickListener { v: View ->
             showPopup(binding.buttonAddTrack)
+            repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
         }
 
         binding.buttonPlayPause.setOnClickListener { v: View ->
@@ -60,9 +72,10 @@ class TrackEditorFragment : Fragment() {
         binding.trackDisplay.apply{
             setHasFixedSize(true)
             // layout manager
-            layoutManager = recyclerLayout
+            binding.trackDisplay.layoutManager = LinearLayoutManager(context)
             // adapter
-            adapter = recyclerAdapter
+            binding.trackDisplay.adapter = recyclerAdapter
+
         }
 
         setHasOptionsMenu(true)
@@ -121,6 +134,7 @@ class TrackEditorFragment : Fragment() {
                     trackPlayer = MediaPlayer.create(context,audioUri)
                     tracksPlayer.add(trackPlayer)
                     //setUpMediaPlayer()
+                    //repository.insertTrack(Track(null, 100, 100, 100, 0, args.projectId, 0))
                     recyclerAdapter.notifyDataSetChanged()
                 }
             }
@@ -135,21 +149,28 @@ class TrackEditorFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
-                exportProject()
+                compileAndSave()
             }
             R.id.shareProject -> {
-                shareProject(getShareProjectIntent())
+
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun exportProject() {
-        compileForExport(tracks)
+    fun compileForExport(tracks: List<File>) {
+        var mergeAudio = MergeAudio()
+        mergeAudio.loadFFmpegLibrary()
+        mergeAudio.merge(tracks)
     }
 
-    private fun compileForExport(tracks: List<File>) {
-
+    private fun compileAndSave(){
+        compileForExport(tracks)
+        val saveIntent: Intent = Intent().apply {
+            type = "audio/*"
+            action = Intent.ACTION_CREATE_DOCUMENT
+        }
+        startActivity(Intent.createChooser(saveIntent, "Save"))
     }
 
     private fun getShareProjectIntent() : Intent{
@@ -157,14 +178,7 @@ class TrackEditorFragment : Fragment() {
             type = "audio/*"
             action = Intent.ACTION_SEND
         }
-
-        return sendIntent
-    }
-
-    private fun shareProject(intent: Intent) {
-        if (intent != null) {
-            startActivity(Intent.createChooser(intent, "Share Audio"))
-        }
+        startActivity(Intent.createChooser(sendIntent, "Share Image"))
     }
 
     private fun setUpMediaPlayer(){

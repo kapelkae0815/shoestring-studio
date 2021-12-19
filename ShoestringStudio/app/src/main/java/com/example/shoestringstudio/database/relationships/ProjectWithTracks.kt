@@ -12,5 +12,5 @@ data class ProjectWithTracks (
         parentColumn = "projectId",
         entityColumn = "projectId",
     )
-    val tracks: LiveData<List<Project>>
+    val tracks: List<Track>
 )
