@@ -5,7 +5,7 @@
     android:id="@+id/trackHolder"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:background="#ECCED8">
+    android:background="@drawable/layout_track_border">
 
     <TextView
         android:id="@+id/textTrackName"
@@ -15,6 +15,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="16dp"
         android:text="@string/text_track_name"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,6 +26,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
         android:text="@string/text_volume"
+        android:textColor="@color/white"
         app:layout_constraintStart_toEndOf="@+id/textTrackName"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,8 +37,10 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="8dp"
         android:text="@string/text_mute"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTrackName" />
+        app:layout_constraintTop_toBottomOf="@+id/textTrackName"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/sliderVolume"
@@ -46,8 +50,14 @@
         android:tooltipText="@string/text_volume"
         android:valueFrom="0.0"
         android:valueTo="100.0"
+        app:haloColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/textVolumeText"
-        app:layout_constraintTop_toBottomOf="@+id/inputTextVolume" />
+        app:layout_constraintTop_toBottomOf="@+id/inputTextVolume"
+        app:thumbColor="@color/white"
+        app:tickColorInactive="@color/shoestring_ash"
+        app:trackColor="@color/shoestring_cloud"
+        app:trackColorActive="@color/shoestring_cloud"
+        app:trackColorInactive="@color/shoestring_ash" />
 
     <EditText
         android:id="@+id/inputTextVolume"

@@ -1,6 +1,9 @@
 package com.example.shoestringstudio
 
+import android.R.attr
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.media.MediaMuxer
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -10,12 +13,28 @@ import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.databinding.DataBindingUtil
+import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
+
+import androidx.activity.result.contract.ActivityResultContracts
+import java.util.*
+
+import android.widget.PopupMenu
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import android.media.MediaPlayer
+import android.os.AsyncTask.execute
+import android.os.Environment
+import androidx.core.net.toUri
+import androidx.navigation.fragment.navArgs
 import com.example.shoestringstudio.database.Repository
+import com.example.shoestringstudio.database.entities.Track
+import java.io.*
+import android.R.attr.data
+import android.content.Context.MODE_WORLD_READABLE
 import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
@@ -27,20 +46,23 @@ class TrackEditorFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackEditorBinding
     private val args: TrackEditorFragmentArgs by navArgs()
-    //make an ArrayList of files that will be the project
+
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
-    lateinit var trackPlayer: MediaPlayer
-    lateinit var recyclerAdapter: TrackEditorAdapter
-    private lateinit var viewModel: ViewModel
+    var trackPlayer = MediaPlayer()
+    var recyclerLayout = LinearLayoutManager(context)
+    var recyclerAdapter = TrackEditorAdapter(tracks)
+
+    var fileOut = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "test/mp4")
     private lateinit var repository: Repository
+
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        //fileOut.createNewFile()
         repository = Repository.getInstance(activity?.application!!)
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate<FragmentTrackEditorBinding>(
@@ -89,8 +111,7 @@ class TrackEditorFragment : Fragment() {
 
     //goes to RecordingFragment
     fun toRecordTrack(v: View?){
-        for(i in tracksPlayer) i.release()
-        v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
+        //v?.findNavController()?.navigate(TrackEditorFragmentDirections.actionTrackEditorFragmentToRecordingFragment())
     }
 
 
@@ -113,12 +134,12 @@ class TrackEditorFragment : Fragment() {
      */
     private var audioFileLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
             if (result.data != null) {
                 if (result.data!!.data != null) {
                     //store the audio file in a variable
                     val audioUri = result.data!!.data as Uri
                     val track = File(audioUri.path)
+                    tracks.add(track)
                     repository.insertTrack(args.projectId!!, audioUri.toString(), track.nameWithoutExtension)
 
                     recyclerAdapter.notifyDataSetChanged()
@@ -137,12 +158,27 @@ class TrackEditorFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
+                compileForExport(tracks)
+            }
+            R.id.shareProject -> {
 
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    fun compileForExport(tracks: List<File>) {
+        val mergeAudio : MergeAudio? = null
+        mergeAudio?.mix(tracks)
+    }
+
+    private fun setUpMediaPlayer(){
+        //add each Uri into a mediaPlayer and then add the media players to an arrayList
+        for(i in tracks.indices){
+            trackPlayer = MediaPlayer.create(context,tracks[i].toUri())
+            tracksPlayer.add(trackPlayer)
+        }
+    }
 
     /**
      * Holds observer for getting the recyclerView
@@ -168,7 +204,6 @@ class TrackEditorFragment : Fragment() {
                     if(t.tracks.count() == 0){
                         recyclerAdapter.notifyDataSetChanged()
                     }
-
                     for(i in t.tracks) {
                         tracks.add(File(Uri.parse(i.pathName).path))
                         trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
