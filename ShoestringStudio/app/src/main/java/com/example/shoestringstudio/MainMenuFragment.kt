@@ -38,6 +38,8 @@ class MainMenuFragment : Fragment() {
         getProjects()
         return binding.root
     }
+
+
     private fun getProjects() {
         recyclerAdapter = MainMenuAdapter()
         binding.recyclerView.apply {
