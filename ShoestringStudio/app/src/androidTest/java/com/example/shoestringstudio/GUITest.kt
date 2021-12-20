@@ -1,37 +1,17 @@
 package com.example.shoestringstudio
 
-import android.content.Intent
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Adapter
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.UiController
-import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.NavigationViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
-
 import androidx.test.ext.junit.rules.ActivityScenarioRule
-import androidx.test.filters.LargeTest
-import androidx.test.rule.ActivityTestRule
 import androidx.test.runner.AndroidJUnit4
-import org.hamcrest.Description
-import org.hamcrest.Matcher
-import org.hamcrest.Matchers.*
-import org.hamcrest.TypeSafeMatcher
-import org.hamcrest.core.StringEndsWith.endsWith
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.regex.Pattern.matches
 
 /**
  * Instrumented test, which will execute on an Android device.

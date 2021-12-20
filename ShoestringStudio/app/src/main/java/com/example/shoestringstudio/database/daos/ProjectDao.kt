@@ -16,8 +16,8 @@ interface ProjectDao {
     @Insert
     fun insertProject(project: Project)
 
-    @Query("UPDATE Project SET trackAmount = trackAmount-1 WHERE projectId = :id")
-    fun updateTrackAmount(id: Long?)
+    @Query("UPDATE Project SET trackAmount = :trackAmount WHERE projectId = :id")
+    fun updateTrackAmount(id: Long?, trackAmount: Int)
 
     @Query("SELECT * FROM Project WHERE projectId = :id")
     fun getProjectFromId(id: Long): Project

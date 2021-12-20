@@ -188,7 +188,7 @@ class TrackEditorFragment : Fragment() {
             binding.trackDisplay.adapter = recyclerAdapter
         }
         val viewModelProvider = ViewModelProvider(this)
-        var viewModel = viewModelProvider.get(ViewModel::class.java)
+        val viewModel = viewModelProvider.get(ViewModel::class.java)
         viewModel.getAllTracks(args.projectId).observe(viewLifecycleOwner, object:
             Observer<ProjectWithTracks> {
             private var adapter = recyclerAdapter

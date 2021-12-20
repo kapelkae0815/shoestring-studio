@@ -1,6 +1,7 @@
 package com.example.shoestringstudio.database
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.shoestringstudio.database.daos.ProjectDao
 import com.example.shoestringstudio.database.daos.TrackDao
@@ -52,9 +53,9 @@ class Repository(app: Application) {
 
     fun deleteProject(id: Long) {
         CoroutineScope(IO).launch {
-//            while (trackDao.getTrackAmount(id) > 0) {
-//                trackDao.deleteTrack(trackDao.getTrackFromId(trackDao.getLatestTrack(id)))
-//            }
+            while (trackDao.getTrackAmount(id) > 0) {
+                trackDao.deleteTrack(trackDao.getTrackFromId(trackDao.getLatestTrack(id)))
+            }
             projectDao.deleteProject(projectDao.getProjectFromId(id))
         }
     }
@@ -70,6 +71,9 @@ class Repository(app: Application) {
     fun insertTrack(id: Long, filePath: String?, name: String?) {
         CoroutineScope(IO).launch {
             trackDao.insertTrack(Track(null, name, 100, 100, 0, id, filePath!!))
+            val amount = trackDao.getTrackAmount(id)
+            Log.i("Amount: ", amount.toString())
+            projectDao.updateTrackAmount(id, amount)
         }
     }
 
@@ -82,16 +86,10 @@ class Repository(app: Application) {
     fun deleteTrack(id: Long) {
         CoroutineScope(IO).launch {
             trackDao.deleteTrack(trackDao.getTrackFromId(id))
-            projectDao.updateTrackAmount(id)
+            val amount = trackDao.getTrackAmount(id)
+            Log.i("Amount: ", amount.toString())
+            projectDao.updateTrackAmount(id, amount)
         }
-    }
-
-    fun getTrackAmount(id: Long): Int {
-        var count = -1
-        CoroutineScope(IO).launch {
-            count = trackDao.getTrackAmount(id)
-        }
-        return count
     }
 
     // sound functions

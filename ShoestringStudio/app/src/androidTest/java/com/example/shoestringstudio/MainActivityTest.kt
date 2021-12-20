@@ -44,6 +44,39 @@ class MainActivityTest {
 
         val materialButton2 = onView(
             allOf(
+                withId(R.id.projectEditButton), withText("Edit"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.recyclerView),
+                        0
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
+        )
+        materialButton2.perform(click())
+
+        val appCompatImageButton = onView(
+            allOf(
+                withContentDescription("Navigate up"),
+                childAtPosition(
+                    allOf(
+                        withId(R.id.action_bar),
+                        childAtPosition(
+                            withId(R.id.action_bar_container),
+                            0
+                        )
+                    ),
+                    2
+                ),
+                isDisplayed()
+            )
+        )
+        appCompatImageButton.perform(click())
+
+        val materialButton3 = onView(
+            allOf(
                 withId(R.id.projectDeleteButton), withText("Delete"),
                 childAtPosition(
                     childAtPosition(
@@ -55,7 +88,7 @@ class MainActivityTest {
                 isDisplayed()
             )
         )
-        materialButton2.perform(click())
+        materialButton3.perform(click())
     }
 
     private fun childAtPosition(
