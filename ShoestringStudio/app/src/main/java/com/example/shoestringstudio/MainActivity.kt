@@ -1,6 +1,7 @@
 package com.example.shoestringstudio
 
 
+import android.Manifest
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -23,6 +24,16 @@ class MainActivity : AppCompatActivity() {
 
         navController = this.findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Manifest.permission.READ_EXTERNAL_STORAGE;
+        Manifest.permission.MANAGE_EXTERNAL_STORAGE;
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     /**

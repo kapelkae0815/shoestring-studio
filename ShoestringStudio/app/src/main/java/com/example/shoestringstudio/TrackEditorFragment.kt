@@ -1,11 +1,13 @@
 package com.example.shoestringstudio
 
+import android.Manifest
+import android.R.attr
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +19,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shoestringstudio.database.Repository
+import com.example.shoestringstudio.database.entities.Track
+import java.io.*
+import android.R.attr.data
+import android.content.Context.MODE_WORLD_READABLE
+import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
@@ -35,9 +44,12 @@ class TrackEditorFragment : Fragment() {
     var trackPlayer = MediaPlayer()
     var recyclerLayout = LinearLayoutManager(context)
     var recyclerAdapter = TrackEditorAdapter()
-    private lateinit var viewModel: ViewModel
+    var permRead = Manifest.permission.READ_EXTERNAL_STORAGE
+    var permWrite = Manifest.permission.WRITE_EXTERNAL_STORAGE
+    var REQUESTQODE = 100
+    var perms = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
-    var fileOut = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC), "test/mp4")
+
     private lateinit var repository: Repository
 
     override fun onCreateView(
@@ -115,6 +127,7 @@ class TrackEditorFragment : Fragment() {
                     //store the audio file in a variable
                     val audioUri = result.data!!.data as Uri
                     val track = File(audioUri.path)
+                    Log.d("myTag", audioUri.path.toString())
                     tracks.add(track)
                     repository.insertTrack(args.projectId!!, audioUri.toString(), track.nameWithoutExtension)
 
@@ -131,10 +144,14 @@ class TrackEditorFragment : Fragment() {
         inflater?.inflate(R.menu.option_menu, menu)
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
+                Log.d("myTag", "menu button clicked")
+                ActivityCompat.requestPermissions(this.requireActivity(),perms, REQUESTQODE)
                 compileForExport(tracks)
+                Toast.makeText(context,"File Compiled", Toast.LENGTH_LONG).show()
             }
             R.id.shareProject -> {
 
@@ -143,11 +160,13 @@ class TrackEditorFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    fun compileForExport(tracks: List<File>) {
-        val mergeAudio : MergeAudio? = null
-        mergeAudio?.mix(tracks)
+    fun compileForExport(tracks: ArrayList<File>) {
+        Log.d("myTag", "Compile called")
+        val mergeAudio = MergeAudio()
+        mergeAudio.mix(tracks)
+        Toast.makeText(context,"File Compiled", Toast.LENGTH_LONG).show()
     }
-
+    
     private fun setUpMediaPlayer(){
         //add each Uri into a mediaPlayer and then add the media players to an arrayList
         for(i in tracks.indices){
@@ -169,7 +188,7 @@ class TrackEditorFragment : Fragment() {
             binding.trackDisplay.adapter = recyclerAdapter
         }
         val viewModelProvider = ViewModelProvider(this)
-        viewModel = viewModelProvider.get(ViewModel::class.java)
+        var viewModel = viewModelProvider.get(ViewModel::class.java)
         viewModel.getAllTracks(args.projectId).observe(viewLifecycleOwner, object:
             Observer<ProjectWithTracks> {
             private var adapter = recyclerAdapter
