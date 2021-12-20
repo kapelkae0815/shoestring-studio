@@ -21,6 +21,7 @@ import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
 import java.io.File
+import java.lang.NullPointerException
 import java.util.*
 
 
@@ -176,13 +177,18 @@ class TrackEditorFragment : Fragment() {
                 tracksPlayer.clear()
                 if(t != null) {
                     adapter.setTracks(t)
-                    if(t.tracks.count() == 0){
-                        recyclerAdapter.notifyDataSetChanged()
-                    }
+
                     for(i in t.tracks) {
                         tracks.add(File(Uri.parse(i.pathName).path))
-                        trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
-                        tracksPlayer.add(trackPlayer)
+                        adapter.notifyDataSetChanged()
+                        try{
+                            trackPlayer = MediaPlayer.create(context, Uri.parse(i.pathName))
+                            tracksPlayer.add(trackPlayer)
+                        }
+                        catch(e: NullPointerException){
+                            trackPlayer.reset()
+                            //trackPlayer.setDataSource(i.pathName)
+                        }
 
                     }
                 }
