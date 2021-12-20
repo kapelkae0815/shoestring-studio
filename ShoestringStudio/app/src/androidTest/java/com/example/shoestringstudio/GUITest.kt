@@ -1,5 +1,6 @@
 package com.example.shoestringstudio
 
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
@@ -14,8 +15,7 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -56,7 +56,7 @@ class GUITest {
 
 
         onView(withId(R.id.button_add_project)).perform(click())
-        onView(withId(R.id.recyclerView)).perform(actionOnItemAtPosition<MainMenuAdapter.ProjectHolder>(1, click()))
+        onView(withId(R.id.recyclerView)).perform(actionOnItemAtPosition<MainMenuAdapter.ProjectHolder>(0, click()))
         onView(withId(R.id.title_text)).check(matches(isDisplayed()))
         pressBack()
         onView(withId(R.id.title_text_title)).check(matches(isDisplayed()))
@@ -71,8 +71,9 @@ class GUITest {
     // Doesn't work
     @Test
     fun deletingProject() {
-        onView(allOf(withId(R.id.recyclerView), withParentIndex(R.id.buttonDeleteProject)))
-            .perform(actionOnItemAtPosition<MainMenuAdapter.ProjectHolder>(0, click()))
+        onView((withId(R.id.recyclerView)))
+            .perform(actionOnItem<MainMenuAdapter.ProjectHolder>(hasDescendant(withText("projectDeleteButton")), click()))
     }
+
 
 }
