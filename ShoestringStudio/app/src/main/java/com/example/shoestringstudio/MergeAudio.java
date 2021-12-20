@@ -22,30 +22,39 @@ import zeroonezero.android.audio_mixer.input.AudioInput;
 import zeroonezero.android.audio_mixer.input.GeneralAudioInput;
 
 public class MergeAudio extends AppCompatActivity {
-
+    ArrayList<AudioInput> inputs = new ArrayList<AudioInput>();
     // Storage Permissions
-
     public void mix(ArrayList<File> tracks) throws IOException {
-        Log.d("myTag", "Inside mix");
-        ArrayList<AudioInput> inputs = new ArrayList<AudioInput>();
+        //create an ArrayList of Inputs
+
+
+        //turn every track into a GeneralAudioInput and then add them to the ArrayList
         for(int i = 0; i < tracks.size(); i++) {
             String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getPath() + "/"+tracks.get(i).getName();
             AudioInput input = new GeneralAudioInput(path);
             inputs.add(input);
         }
 
-        String outputPath = "/sdcard/Music/" +"audio_mixer_output.mp3";
+        //make an output path for the AudioMixer
+        String outputPath = "/sdcard/Music/" +"audio_mixer_outputAnotherOne.mp3";
         final AudioMixer audioMixer = new AudioMixer(outputPath);
         for(int i = 0; i < tracks.size(); i++) {
             audioMixer.addDataSource(inputs.get(i));
         }
+
+        //setup the AudioMixer and run it to combine inputs
         audioMixer.setSampleRate(44100);
         audioMixer.setBitRate(128000);
-        audioMixer.setChannelCount(tracks.size());
+        audioMixer.setChannelCount(2);
         audioMixer.start();
         audioMixer.processSync();
         audioMixer.release();
-        Log.d("myTag", "AudioMixer released");
+    }
+
+    public void volume(int vol) {
+        for(int i = 0; i < inputs.size(); i++){
+            inputs.get(i).setVolume(vol);
+        }
     }
 
 }

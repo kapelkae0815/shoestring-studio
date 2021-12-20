@@ -24,11 +24,14 @@ import java.io.*
 import android.R.attr.data
 import android.content.Context.MODE_WORLD_READABLE
 import android.util.Log
+import android.view.Gravity.apply
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.GravityCompat.apply
 import com.example.shoestringstudio.database.ViewModel
 import com.example.shoestringstudio.database.relationships.ProjectWithTracks
 import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
+import org.w3c.dom.Element
 import java.io.File
 import java.lang.NullPointerException
 import java.util.*
@@ -39,6 +42,7 @@ class TrackEditorFragment : Fragment() {
     private lateinit var binding: FragmentTrackEditorBinding
     private val args: TrackEditorFragmentArgs by navArgs()
 
+    val mergeAudio = MergeAudio()
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
@@ -81,6 +85,8 @@ class TrackEditorFragment : Fragment() {
         setHasOptionsMenu(true)
         Log.i("id: " , args.projectId.toString())
         getTracks()
+        //mergeAudio.volume(recyclerAdapter.setVol())
+        //tracksPlayer.get(0).setVolume(recyclerAdapter.setVol().toFloat(), recyclerAdapter.setVol().toFloat())
         return binding.root
     }
 
@@ -154,15 +160,24 @@ class TrackEditorFragment : Fragment() {
                 Toast.makeText(context,"File Compiled", Toast.LENGTH_LONG).show()
             }
             R.id.shareProject -> {
-
+                share()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
+    fun share() {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_FROM_STORAGE, "My Shared File")
+            type = "audio/*"
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
+    }
+
     fun compileForExport(tracks: ArrayList<File>) {
         Log.d("myTag", "Compile called")
-        val mergeAudio = MergeAudio()
         mergeAudio.mix(tracks)
         Toast.makeText(context,"File Compiled", Toast.LENGTH_LONG).show()
     }
