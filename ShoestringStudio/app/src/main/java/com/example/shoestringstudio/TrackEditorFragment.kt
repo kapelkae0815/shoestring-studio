@@ -8,7 +8,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.*
 import android.widget.PopupMenu
 import androidx.activity.result.contract.ActivityResultContracts
@@ -44,7 +43,7 @@ class TrackEditorFragment : Fragment() {
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
     var recyclerLayout = LinearLayoutManager(context)
-    var recyclerAdapter = TrackEditorAdapter(tracks)
+    var recyclerAdapter = TrackEditorAdapter()
     var permRead = Manifest.permission.READ_EXTERNAL_STORAGE
     var permWrite = Manifest.permission.WRITE_EXTERNAL_STORAGE
     var REQUESTQODE = 100
@@ -189,7 +188,7 @@ class TrackEditorFragment : Fragment() {
             binding.trackDisplay.adapter = recyclerAdapter
         }
         val viewModelProvider = ViewModelProvider(this)
-        viewModel = viewModelProvider.get(ViewModel::class.java)
+        var viewModel = viewModelProvider.get(ViewModel::class.java)
         viewModel.getAllTracks(args.projectId).observe(viewLifecycleOwner, object:
             Observer<ProjectWithTracks> {
             private var adapter = recyclerAdapter
