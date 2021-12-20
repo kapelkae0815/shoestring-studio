@@ -36,13 +36,12 @@
             android:id="@+id/button_add_project"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginEnd="48dp"
             android:text="@string/text_add_project"
             android:textSize="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.50"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -50,14 +49,32 @@
             android:layout_height="0dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="128dp"
             android:background="@color/shoestring_ash"
-            app:layout_constraintBottom_toTopOf="@+id/button_add_project"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_text_projects"
+            app:layout_constraintVertical_bias="0.52"
             tools:listitem="@layout/project_recyclerview_item" />
+
+        <EditText
+            android:id="@+id/editTextProjectName"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="32dp"
+            android:background="@color/shoestring_ash"
+            android:ems="10"
+            android:hint="@string/text_enter_project_name"
+            android:inputType="textPersonName"
+            android:text="@string/text_projectname_default"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button_add_project"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

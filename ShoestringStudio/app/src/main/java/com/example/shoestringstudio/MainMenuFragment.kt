@@ -22,6 +22,7 @@ class MainMenuFragment : Fragment() {
     private lateinit var recyclerAdapter: MainMenuAdapter
     private lateinit var viewModel: ViewModel
 
+    
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,7 +32,8 @@ class MainMenuFragment : Fragment() {
             inflater, R.layout.fragment_main_menu, container, false)
 
         binding.buttonAddProject.setOnClickListener() { v: View ->
-            val project = Project(null, "ProjectName", Date(), 0, 0)
+            val projectNameInput : String = binding.editTextProjectName.text.toString()
+            val project = Project(null, projectNameInput, Date(), 0, 0)
             Repository(activity?.application!!).insertProject(project)
         }
 

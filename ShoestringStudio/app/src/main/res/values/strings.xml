@@ -26,4 +26,6 @@
     <string name="exportToDevice">Export To Device</string>
     <string name="shareProject">Share Project</string>
     <string name="text_play_pause">Play/Pause</string>
+    <string name="text_projectname_default">myproject</string>
+    <string name="text_enter_project_name">Enter Project Name:</string>
 </resources>
