@@ -19,7 +19,8 @@ class Repository(app: Application) {
     private lateinit var trackDao: TrackDao
     private lateinit var data: LiveData<List<UserWithProjects>>
     private lateinit var projects: LiveData<List<UserWithProjects>>
-    private lateinit var tracks: LiveData<List<ProjectWithTracks>>
+    private lateinit var tracks: LiveData<ProjectWithTracks>
+
 
     init {
         val database: RoomDb? = RoomDb.getInstance(app)
@@ -43,21 +44,17 @@ class Repository(app: Application) {
 
     // Project functions
 
-    fun insertProject(project: Project): Long? {
-        var id: Long? = 0
+    fun insertProject(project: Project) {
         CoroutineScope(IO).launch {
             projectDao.insertProject(project)
-            id = projectDao.getLatestProjectId()
         }
-
-        return id
     }
 
     fun deleteProject(id: Long) {
         CoroutineScope(IO).launch {
-            while (trackDao.getTrackAmount(id) > 0) {
-                trackDao.deleteTrack(trackDao.getTrackFromId(trackDao.getLatestTrack(id)))
-            }
+//            while (trackDao.getTrackAmount(id) > 0) {
+//                trackDao.deleteTrack(trackDao.getTrackFromId(trackDao.getLatestTrack(id)))
+//            }
             projectDao.deleteProject(projectDao.getProjectFromId(id))
         }
     }
@@ -70,17 +67,14 @@ class Repository(app: Application) {
 
 
     // track functions
-    fun insertTrack(track: Track) {
-        fun insertTrack(id: Long) {
-            CoroutineScope(IO).launch {
-                trackDao.insertTack(track)
-                trackDao.insertTack(Track(null, 100, 100, 100, 0, id, 0))
-            }
+    fun insertTrack(id: Long, filePath: String?, name: String?) {
+        CoroutineScope(IO).launch {
+            trackDao.insertTrack(Track(null, name, 100, 100, 0, id, filePath!!))
         }
     }
 
 
-    fun getTracks(id: Long): LiveData<List<ProjectWithTracks>> {
+    fun getTracks(id: Long): LiveData<ProjectWithTracks> {
         tracks = projectDao.getTracksFromProject(id)
         return tracks
     }
@@ -88,7 +82,6 @@ class Repository(app: Application) {
     fun deleteTrack(id: Long) {
         CoroutineScope(IO).launch {
             trackDao.deleteTrack(trackDao.getTrackFromId(id))
-            val trackAmount = trackDao.getTrackAmount(id)
             projectDao.updateTrackAmount(id)
         }
     }

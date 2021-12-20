@@ -22,11 +22,10 @@ interface ProjectDao {
     @Query("SELECT * FROM Project WHERE projectId = :id")
     fun getProjectFromId(id: Long): Project
 
-    @Query("SELECT * FROM Project WHERE projectId = :id")
-    fun getTracksFromProject(id: Long): LiveData<List<ProjectWithTracks>>
+
     @Transaction
     @Query("SELECT * FROM Track WHERE projectId = :id")
-    fun getTracksFromProject(id: Long?): LiveData<List<ProjectWithTracks>>
+    fun getTracksFromProject(id: Long?): LiveData<ProjectWithTracks>
 
     @Query("SELECT max(projectId) FROM Project")
     fun getLatestProjectId(): Long

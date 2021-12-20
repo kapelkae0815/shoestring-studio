@@ -1,14 +1,12 @@
 package com.example.shoestringstudio.database.daos
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.shoestringstudio.database.entities.SoundSource
 import com.example.shoestringstudio.database.entities.Track
 
 @Dao
 interface TrackDao {
     @Insert
-    fun insertTack(track: Track)
+    fun insertTrack(track: Track)
 
     @Delete
     fun deleteTrack(track: Track)
