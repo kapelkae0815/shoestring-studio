@@ -13,6 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.shoestringstudio.database.Repository
 import com.example.shoestringstudio.database.relationships.UserWithProjects
 
+/**
+ * Adapter for recyclerView in main menu
+ * @property projects list for the projects from relation data class UserWithProjects
+ * @property repository for accessing the repository functions
+ * @property context for accessing getInstance companion object for repository
+ */
 class MainMenuAdapter:
     RecyclerView.Adapter<MainMenuAdapter.ProjectHolder>(){
     class ProjectHolder(val projectView: View): RecyclerView.ViewHolder(projectView)
@@ -20,6 +26,10 @@ class MainMenuAdapter:
     private lateinit var repository: Repository
 
     private lateinit var context: Context
+
+    /**
+     * notifying recyclerview of change and updating list of projects
+     */
     fun setProjects(
         project: List<UserWithProjects>?
     ) {
@@ -27,6 +37,10 @@ class MainMenuAdapter:
         notifyDataSetChanged()
     }
 
+    /**
+     * Initializing viewholder for recyclerView items
+     * @return returns the projectHolder
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProjectHolder {
         context = parent.context
 
@@ -35,6 +49,9 @@ class MainMenuAdapter:
         return ProjectHolder(view)
     }
 
+    /**
+     * binding the viewHolder properties for each index of the recyclerView
+     */
     override fun onBindViewHolder(holder: ProjectHolder, position: Int) {
         val current = projects?.get(position)?.projects?.get(position)
         val textView = holder.projectView.findViewById<TextView>(R.id.projectName)
@@ -52,9 +69,16 @@ class MainMenuAdapter:
         }
     }
 
+    /**
+     * @return getting count of recyclerView project items
+     */
     override fun getItemCount(): Int {
         return projects?.size?:0
     }
+
+    /**
+     * launches delete query for the specific project when delete button is clicked through recyclerView
+     */
     private fun deleteProject(id: Long) {
         if (id != null && repository != null) {
             repository.deleteProject(id)

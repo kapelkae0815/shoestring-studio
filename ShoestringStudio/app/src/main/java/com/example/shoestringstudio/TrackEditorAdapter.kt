@@ -18,8 +18,9 @@ import com.example.shoestringstudio.databinding.FragmentTrackEditorBinding
 import java.io.File
 
 /**
- * This Adapter takes in the list of audio files and adds a new track layout
- * to the recycler view after a new audiofile is imported
+ * Adapter for the trackEditor Fragment
+ * @property context for use of context
+ * @property tracks for list of tracks in recyclerView
  */
 class TrackEditorAdapter():
         RecyclerView.Adapter<TrackEditorAdapter.TrackHolder>(){
@@ -27,6 +28,10 @@ class TrackEditorAdapter():
         private var tracks: List<Track>? = null
 
         class TrackHolder(val trackView: View): RecyclerView.ViewHolder(trackView)
+
+        /**
+         * Notifying if recyclerView changes and then updating tracks
+         */
         fun setTracks(track: ProjectWithTracks?) {
                 if (track != null) {
                         tracks = track.tracks
@@ -34,14 +39,19 @@ class TrackEditorAdapter():
                 notifyDataSetChanged()
         }
 
-        //create the viewHolder for tracks
+        /**
+         * initializing viewHolder
+         * @returns trackHolder
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackHolder{
                 val view = (LayoutInflater.from(parent.context).inflate(R.layout.layout_track, parent, false))
                 context = parent.context
                 return TrackHolder(view)
         }
 
-        //Bind the viewHolder
+        /**
+         * binding the viewHolder properties for each index of the recyclerView
+         */
         override fun onBindViewHolder(holder: TrackHolder, position: Int) {
                 val trackCurrent = tracks?.get(position)
                 Log.i("id: ", trackCurrent?.trackId.toString())
@@ -57,7 +67,9 @@ class TrackEditorAdapter():
 
         }
 
-        //get the size of the file list
+        /**
+         * @return getting count of recyclerView items/tracks
+         */
         override fun getItemCount(): Int {
 
                 return tracks?.size?:0

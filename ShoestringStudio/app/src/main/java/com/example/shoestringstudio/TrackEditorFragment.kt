@@ -33,7 +33,18 @@ import java.io.File
 import java.lang.NullPointerException
 import java.util.*
 
-
+/**
+ * Fragment for adding/deleting and sharing/exporting tracks
+ * @property binding for use of binding
+ * @property args for getting the projectId
+ * @property tracks list of files for exporting
+ * @property trackPlayer Media player for playing audio from audio Uri's
+ * @property tracksPlayer list of trackPlayer for storing several
+ * @property recyclerAdapter for using the adapter
+ * @property REQUESTQODE permissions for intents
+ * @property perms list of needed permissions
+ * @property repository for accessing the repository
+ */
 class TrackEditorFragment : Fragment() {
 
     private lateinit var binding: FragmentTrackEditorBinding
@@ -42,16 +53,17 @@ class TrackEditorFragment : Fragment() {
     var tracks = ArrayList<File>()
     var tracksPlayer = ArrayList<MediaPlayer>()
     var trackPlayer = MediaPlayer()
-    var recyclerLayout = LinearLayoutManager(context)
     var recyclerAdapter = TrackEditorAdapter()
-    var permRead = Manifest.permission.READ_EXTERNAL_STORAGE
-    var permWrite = Manifest.permission.WRITE_EXTERNAL_STORAGE
     var REQUESTQODE = 100
     var perms = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE)
 
 
     private lateinit var repository: Repository
 
+    /**
+     * initializing fragment and displaying recyclerView items with add track button
+     * @return binding
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -118,7 +130,7 @@ class TrackEditorFragment : Fragment() {
 
     /**
      * Launches the intent after making sure the intent is giving back data,
-     * also notifies the Adpter of a new file being added
+     * also notifies the Adapter of a new file being added
      */
     private var audioFileLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -137,14 +149,19 @@ class TrackEditorFragment : Fragment() {
         }
 
 
-
-    //Inflate the Options menu
+    /**
+     * inflating menu options for exporting/sharing
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater?.inflate(R.menu.option_menu, menu)
     }
 
 
+    /**
+     * Functionality for selecting export and share
+     * @return returns the option selected
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item?.itemId) {
             R.id.exportToDevice -> {
@@ -160,6 +177,9 @@ class TrackEditorFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * exporting and merging audio files
+     */
     fun compileForExport(tracks: ArrayList<File>) {
         Log.d("myTag", "Compile called")
         val mergeAudio = MergeAudio()

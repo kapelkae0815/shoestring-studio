@@ -14,12 +14,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
+/**
+ * Repository for RoomDB functions
+ * @property projectDao for using ProjectDao's functions
+ * @property userDao for using UserDao's functions
+ * @property trackDao for using TrackDao's functions
+ * @property projects accessing list of UserWithProjects relation data class
+ * @property tracks accessing list of ProjectWithTracks relation data class
+ */
 class Repository(app: Application) {
     private lateinit var projectDao: ProjectDao
     private lateinit var userDao: UserDao
     private lateinit var trackDao: TrackDao
-    private lateinit var data: LiveData<List<UserWithProjects>>
-    private lateinit var projects: LiveData<List<UserWithProjects>>
+    private var projects: LiveData<List<UserWithProjects>>
     private lateinit var tracks: LiveData<ProjectWithTracks>
 
 
@@ -34,17 +41,16 @@ class Repository(app: Application) {
         projects = userDao.getProjectsFromUser(0)
     }
 
+
+    /**
+     * Project functions
+     */
+
     fun getProjects(id: Long): LiveData<List<UserWithProjects>> {
-        data = userDao.getProjectsFromUser(0)
         projects = userDao.getProjectsFromUser(0)
 
-        return data
         return projects
     }
-
-
-    // Project functions
-
     fun insertProject(project: Project) {
         CoroutineScope(IO).launch {
             projectDao.insertProject(project)
@@ -67,7 +73,9 @@ class Repository(app: Application) {
     }
 
 
-    // track functions
+    /**
+     * Track Functions
+     */
     fun insertTrack(id: Long, filePath: String?, name: String?) {
         CoroutineScope(IO).launch {
             trackDao.insertTrack(Track(null, name, 100, 100, 0, id, filePath!!))
@@ -92,9 +100,11 @@ class Repository(app: Application) {
         }
     }
 
-    // sound functions
 
-
+    /**
+     * For making repository a singleton
+     * @returns instance as a repository singleton
+     */
     companion object {
         private var instance: Repository? = null
         fun getInstance(app: Application): Repository {

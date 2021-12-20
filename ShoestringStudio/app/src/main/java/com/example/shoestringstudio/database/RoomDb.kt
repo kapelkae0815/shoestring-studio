@@ -9,6 +9,9 @@ import com.example.shoestringstudio.database.entities.Project
 import com.example.shoestringstudio.database.entities.Track
 import com.example.shoestringstudio.database.entities.User
 
+/**
+ * Creates the database and singleton of database instance
+ */
 @Database(entities = [Project::class,
     Track::class, User::class], version = 1)
 @TypeConverters(Converter::class)
@@ -18,6 +21,10 @@ abstract class RoomDb: RoomDatabase() {
     abstract fun userDao(): UserDao
 
 
+    /**
+     * Singleton object for building database
+     * @return returns the instance of singleton
+     */
     companion object {
         private var instance: RoomDb? = null
         fun getInstance(context: Context): RoomDb {

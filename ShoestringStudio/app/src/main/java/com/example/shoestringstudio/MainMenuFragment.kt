@@ -16,12 +16,22 @@ import com.example.shoestringstudio.database.relationships.UserWithProjects
 import com.example.shoestringstudio.databinding.FragmentMainMenuBinding
 import java.util.*
 
+/**
+ * Displays list of projects with recyclerView
+ * @property binding for use of binding
+ * @property recyclerAdapter for use of adapter
+ * @property viewModel for use of viewModel
+ */
 class MainMenuFragment : Fragment() {
 
     private lateinit var binding: FragmentMainMenuBinding
     private lateinit var recyclerAdapter: MainMenuAdapter
     private lateinit var viewModel: ViewModel
 
+    /**
+     * initializing fragment
+     * @return returns binding
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +50,9 @@ class MainMenuFragment : Fragment() {
     }
 
 
+    /**
+     * Setting up viewModel listener for displaying recyclerView for list of projects
+     */
     private fun getProjects() {
         recyclerAdapter = MainMenuAdapter()
         binding.recyclerView.apply {

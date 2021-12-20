@@ -13,11 +13,19 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.Navigation.findNavController
 import com.example.shoestringstudio.databinding.ActivityMainBinding
 
+/**
+ * Holds navigation controller for fragments
+ * @property NavController controller for navigation
+ * @property drawerLayout holds the share/export options in navbar
+ */
 class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     //Stores the constraint layout menu
     private lateinit var drawerLayout: DrawerLayout
 
+    /**
+     * Initializes navController
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,6 +34,9 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
     }
 
+    /**
+     * Initializing permissions
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
